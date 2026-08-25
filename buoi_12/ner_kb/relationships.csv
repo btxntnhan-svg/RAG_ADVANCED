@@ -1,0 +1,109 @@
+source,target,relationship_type,method,confidence,evidence
+112025,Chính phủ,BAN_HANH_BOI,metadata,0.85,Chính phủ
+112025,Nguyễn Xuân Phúc,KY_BOI,metadata,0.85,Nguyễn Xuân Phúc
+112025,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+112924,Bộ Tài chính,BAN_HANH_BOI,metadata,0.85,Bộ Tài chính
+112924,Trần Xuân Hà,KY_BOI,metadata,0.85,Trần Xuân Hà
+112924,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+117310,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+117310,Nguyễn Đồng Tiến,KY_BOI,metadata,0.85,Nguyễn Đồng Tiến
+117310,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+117310,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+133858,Chính phủ,BAN_HANH_BOI,metadata,0.85,Chính phủ
+133858,Nguyễn Xuân Phúc,KY_BOI,metadata,0.85,Nguyễn Xuân Phúc
+133858,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+143217,Bộ Tài chính,BAN_HANH_BOI,metadata,0.85,Bộ Tài chính
+143217,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+146468,Chính phủ,BAN_HANH_BOI,metadata,0.85,Chính phủ
+146468,Nguyễn Xuân Phúc,KY_BOI,metadata,0.85,Nguyễn Xuân Phúc
+146468,Chứng khoán,THUOC_LINH_VUC,metadata,0.82,Chứng khoán
+146468,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+150974,Bộ Tài chính,BAN_HANH_BOI,metadata,0.85,Bộ Tài chính
+150974,Tạ Anh Tuấn,KY_BOI,metadata,0.85,Tạ Anh Tuấn
+150974,"Kế toán, kiểm toán",THUOC_LINH_VUC,metadata,0.82,"Kế toán, kiểm toán"
+150974,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+163441,Chính phủ,BAN_HANH_BOI,metadata,0.85,Chính phủ
+163441,Lê Minh Khái,KY_BOI,metadata,0.85,Lê Minh Khái
+163441,Bảo hiểm,THUOC_LINH_VUC,metadata,0.82,Bảo hiểm
+163441,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+164719,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+164719,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+164719,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+164719,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+166170,Quốc hội,BAN_HANH_BOI,metadata,0.85,Quốc hội
+166170,Vương Đình Huệ,KY_BOI,metadata,0.85,Vương Đình Huệ
+166170,Tín dụng,THUOC_LINH_VUC,metadata,0.82,Tín dụng
+166170,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+166269,Quốc hội,BAN_HANH_BOI,metadata,0.85,Quốc hội
+166269,Vương Đình Huệ,KY_BOI,metadata,0.85,Vương Đình Huệ
+166269,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+168220,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+168220,Đào Minh Tú,KY_BOI,metadata,0.85,Đào Minh Tú
+168220,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+168220,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+168859,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+168859,Đào Minh Tú,KY_BOI,metadata,0.85,Đào Minh Tú
+168859,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+168859,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+169221,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+169221,Phạm Thanh Hà,KY_BOI,metadata,0.85,Phạm Thanh Hà
+169221,Quản lý ngoại hối,THUOC_LINH_VUC,metadata,0.82,Quản lý ngoại hối
+169221,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+173460,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+173460,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+173460,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+173460,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+173695,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+173695,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+173695,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+173695,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+174218,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+174218,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+174218,"Thanh tra, giám sát ngân hàng",THUOC_LINH_VUC,metadata,0.82,"Thanh tra, giám sát ngân hàng"
+174218,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+177271,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+177271,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+177271,Cục An toàn hệ thống các tổ chức tín dụng,THUOC_LINH_VUC,metadata,0.82,Cục An toàn hệ thống các tổ chức tín dụng
+177271,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+185630,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+185630,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+185630,"Lao động, tiền lương, tiền công",THUOC_LINH_VUC,metadata,0.82,"Lao động, tiền lương, tiền công"
+185630,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+186482,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+186482,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+186482,Cục An toàn hệ thống các tổ chức tín dụng,THUOC_LINH_VUC,metadata,0.82,Cục An toàn hệ thống các tổ chức tín dụng
+186482,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+186888,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+186888,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+186888,Cục An toàn hệ thống các tổ chức tín dụng,THUOC_LINH_VUC,metadata,0.82,Cục An toàn hệ thống các tổ chức tín dụng
+186888,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+25692,Quốc hội,BAN_HANH_BOI,metadata,0.85,Quốc hội
+25692,Nguyễn Phú Trọng,KY_BOI,metadata,0.85,Nguyễn Phú Trọng
+25692,Toàn quốc,AP_DUNG_CHO,metadata,0.72,Toàn quốc
+26750,Quốc hội,BAN_HANH_BOI,metadata,0.85,Quốc hội
+26750,Nguyễn Phú Trọng,KY_BOI,metadata,0.85,Nguyễn Phú Trọng
+26750,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+27257,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+27257,Trần Minh Tuấn,KY_BOI,metadata,0.85,Trần Minh Tuấn
+27257,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+30402,Bộ Tài chính,BAN_HANH_BOI,metadata,0.85,Bộ Tài chính
+30402,Trần Xuân Hà,KY_BOI,metadata,0.85,Trần Xuân Hà
+30402,Quản lý dịch vụ tài chính và các quỹ tài chính,THUOC_LINH_VUC,metadata,0.82,Quản lý dịch vụ tài chính và các quỹ tài chính
+30402,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+38128,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+38128,Đào Minh Tú,KY_BOI,metadata,0.85,Đào Minh Tú
+38128,Phát hành và kho quỹ,THUOC_LINH_VUC,metadata,0.82,Phát hành và kho quỹ
+38128,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+44209,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+44209,Đào Minh Tú,KY_BOI,metadata,0.85,Đào Minh Tú
+44209,Phát hành và kho quỹ,THUOC_LINH_VUC,metadata,0.82,Phát hành và kho quỹ
+44209,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+6e689cd0-6f81-11f1-94d6-fd5d6d5ff793,Ngân hàng Nhà nước Việt Nam,BAN_HANH_BOI,metadata,0.85,Ngân hàng Nhà nước Việt Nam
+6e689cd0-6f81-11f1-94d6-fd5d6d5ff793,Đoàn Thái Sơn,KY_BOI,metadata,0.85,Đoàn Thái Sơn
+6e689cd0-6f81-11f1-94d6-fd5d6d5ff793,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+95652,Chính phủ,BAN_HANH_BOI,metadata,0.85,Chính phủ
+95652,Nguyễn Tấn Dũng,KY_BOI,metadata,0.85,Nguyễn Tấn Dũng
+95652,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương
+f69936f0-6937-11f1-a48d-29bc6b0fd706,Bộ Tài chính,BAN_HANH_BOI,metadata,0.85,Bộ Tài chính
+f69936f0-6937-11f1-a48d-29bc6b0fd706,Nguyễn Đức Chi,KY_BOI,metadata,0.85,Nguyễn Đức Chi
+f69936f0-6937-11f1-a48d-29bc6b0fd706,Trung ương,AP_DUNG_CHO,metadata,0.72,Trung ương

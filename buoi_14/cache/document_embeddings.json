@@ -1,0 +1,4 @@
+{
+  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "corpus_hash": "88428abb888ed86b586b8306c04c14078330a67a10aacf44f2daa9e888ee84f6"
+}

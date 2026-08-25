@@ -1,0 +1,7 @@
+pandas
+beautifulsoup4
+python-dotenv
+google-genai
+neo4j
+streamlit
+plotly

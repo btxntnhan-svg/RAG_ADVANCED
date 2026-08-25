@@ -1,0 +1,8 @@
+{
+  "roles": [
+    "Admin",
+    "HR",
+    "Staff",
+    "Guest"
+  ]
+}
