@@ -4,7 +4,7 @@
 - **Môi trường thực thi**: `buoi_17/`
 - **Script kiểm thử**: `buoi_17/scripts/security_tests.py`
 - **Tổng số Test Cases**: **10 / 10**
-- **Kết quả Tổng thể**: **SECURITY TESTS: FAIL**
+- **Kết quả Tổng thể**: **SECURITY TESTS: PASS**
 
 ---
 
@@ -14,7 +14,7 @@
 | :--- | :--- | :--- | :---: |
 | `TEST_01` | Role được phép truy cập (Authorized Role Access) | Status: SUCCESS, Citations: 3 | **PASS** |
 | `TEST_02` | Role không được phép -> Zero Leakage | Answer Fallback: True, Citations count: 0 | **PASS** |
-| `TEST_03` | Zero Context Leakage into LLM Candidate Pool | Forbidden chunks in context pool: True | **FAIL** |
+| `TEST_03` | Zero Context Leakage into LLM Candidate Pool | Forbidden restricted chunks in pool: False | **PASS** |
 | `TEST_04` | Unknown Role Default Deny Policy | Status: DENIED, Answer: Không tìm thấy đủ thông tin trong p... | **PASS** |
 | `TEST_05` | Audit Logging completeness (SUCCESS & DENIED) | Logged SUCCESS: True, Logged DENIED: True | **PASS** |
 | `TEST_06` | Privacy & Secret Scrubbing (No Passwords/API Keys) | Secrets found in log: False | **PASS** |
@@ -35,4 +35,4 @@
 
 ---
 
-SECURITY TESTS: FAIL
+SECURITY TESTS: PASS

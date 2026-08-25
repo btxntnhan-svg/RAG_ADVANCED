@@ -65,14 +65,14 @@ class SecurityTestSuite:
             user_roles=["Guest"],
             top_k=5,
         )
-        # Verify no restricted chunks (containing HR/Risk) in candidate pool for Guest
-        has_forbidden = any("HR" in r.get("allowed_roles", []) or "Risk_Manager" in r.get("allowed_roles", []) for r in retrieved)
+        # Verify all retrieved items are allowed for Guest (allowed_roles contains Guest)
+        has_forbidden = any("Guest" not in r.get("allowed_roles", []) for r in retrieved)
         passed = not has_forbidden
         self.results.append({
             "id": "TEST_03",
             "name": "Zero Context Leakage into LLM Candidate Pool",
             "status": "PASS" if passed else "FAIL",
-            "detail": f"Forbidden chunks in context pool: {has_forbidden}",
+            "detail": f"Forbidden restricted chunks in pool: {has_forbidden}",
         })
         return passed
 
@@ -266,7 +266,8 @@ class SecurityTestSuite:
 
         report_path.write_text("\n".join(lines), encoding="utf-8")
         print(f"[+] Security test report generated at: {report_path}")
-        print(f"\nSECURITY TESTS: {'PASS' if all_pass else 'FAIL'}")
+        res_str = "PASS" if all_pass else "FAIL"
+        print(f"\nSECURITY TESTS: {res_str}")
         return all_pass
 
 
