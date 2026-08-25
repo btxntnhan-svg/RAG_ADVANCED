@@ -1,58 +1,51 @@
-# Báo cáo Đánh giá Vai trò của Knowledge Graph trong Compliance Gap Analysis
+# BÁO CÁO ĐÁNH GIÁ VAI TRÒ KNOWLEDGE GRAPH CHO COMPLIANCE GAP CHECKER
 
-## 1. Mục tiêu Đánh giá
-Kiểm tra cấu trúc và các loại quan hệ (Relationship Types) thực tế trong Knowledge Graph (Neo4j) để xác định xem đồ thị tri thức có hỗ trợ được quy trình **AI Compliance Gap Checker** hay không.
-
-### Nguyên tắc phân định vai trò:
-- **Hybrid Retrieval (Dense + BM25)**: Tìm kiếm nội dung ngữ nghĩa và từ khóa liên quan giữa yêu cầu pháp luật và tài liệu đối chiếu.
-- **Knowledge Graph (KG)**: Mở rộng ứng viên (Candidate Expansion) dựa trên các quan hệ đã được cấu trúc hóa sẵn trong cơ sở dữ liệu.
-- **Gap Checker**: So sánh, đối chiếu bằng chứng (Evidence package) để phân loại mức độ đáp ứng (DAP_UNG, THIEU, CHENH_LECH, CHUA_DU_BANG_CHUNG).
+- **Ngày thực hiện**: 2026-08-25
+- **Môi trường thực thi**: `buoi_17/`
+- **Cơ sở dữ liệu Đồ thị**: Neo4j Graph DB (`bolt://localhost:7687`)
+- **Nguyên tắc an toàn**: Không tự bịa edge hay mối quan hệ ảo trong Neo4j.
 
 ---
 
-## 2. Kiểm tra Cấu trúc Thực tế trong Knowledge Graph (Neo4j)
+## 1. Kết quả Phân tích Schema & Relationship thực tế trong Neo4j
 
-Căn cứ vào mã nguồn nạp đồ thị `buoi_14/scripts/load_secure_kg.py` và lược đồ Neo4j hiện có:
-- **Node Labels**: `(:VanBan)`, `(:DieuKhoan)`
-- **Relationship Types tồn tại**: Duy nhất quan hệ `[:CONTAINS]` giữa một Văn bản và các Điều khoản/Chunk con của chính văn bản đó:
-  ```cypher
-  (document:VanBan)-[:CONTAINS]->(clause:DieuKhoan)
-  ```
+### 1.1. Thống kê các Nhãn Node (Node Labels)
+- `(Document)`: **30** nodes
+- `(CoQuan)`: **8** nodes
+- `(NguoiKy)`: **13** nodes
+- `(DoiTuongApDung)`: **5** nodes
+- `(LinhVuc)`: **14** nodes
+- `(VanBan)`: **15** nodes
+- `(DieuKhoan)`: **15** nodes
 
-### Phân tích chi tiết các loại quan hệ:
-1. **Quan hệ nối văn bản / điều khoản xuyên tài liệu (`[:REFERENCES]`, `[:SUPERSEDES]`, `[:IMPLEMENTS]`)**:
-   - **Thực tế**: **KHÔNG TỒN TẠI** trong cơ sở dữ liệu đồ thị hiện tại.
-   - **Tác động**: Không có cạnh nối tri thức nào thể hiện mối liên hệ giữa một Thông tư NHNN với một Quy định nội bộ ngân hàng hay giữa các văn bản khác nhau.
-2. **Quan hệ cấu trúc phân cấp (`[:CONTAINS]`, `[:NEXT]`)**:
-   - **Thực tế**: Chỉ có `[:CONTAINS]` liên kết cha-con nội bộ trong cùng 1 văn bản.
-   - **Tác động**: Quan hệ này chỉ có ý nghĩa khi cần lấy ngữ cảnh toàn bài của chính văn bản đó, không giúp ích gì cho việc tìm kiếm bằng chứng đối chiếu giữa 2 hệ thống văn bản độc lập (External vs Internal).
-3. **Quan hệ không liên quan**:
-   - Các thuộc tính phân quyền RBAC (`allowed_roles`) gắn trên node dùng để lọc quyền, không phải quan hệ ngữ nghĩa phục vụ gap analysis.
-
----
-
-## 3. Quyết định Tích hợp & Kiến trúc Đề xuất
-
-1. **Không bịa đặt cạnh (No Artificial Edges)**: Tuân thủ quy tắc trung thực khoa học, hệ thống không tự tạo ra các quan hệ giả định giữa các văn bản khi dữ liệu thực tế không có.
-2. **Quyết định sử dụng**:
-   - **KHÔNG sử dụng Knowledge Graph cho Gap Matching** trong kịch bản hiện tại.
-   - Tiếp tục duy trì cơ chế tìm kiếm **Hybrid Retrieval (Dense + Lexical) + Reranking** để thu thập bằng chứng.
-   - Ghi nhận trạng thái: `GRAPH NOT USED FOR GAP MATCHING`.
+### 1.2. Thống kê các Quan hệ (Relationship Types)
+- `[:BAN_HANH_BOI]`: **30** edges
+- `[:KY_BOI]`: **29** edges
+- `[:AP_DUNG_CHO]`: **30** edges
+- `[:THUOC_LINH_VUC]`: **19** edges
+- `[:CONTAINS]`: **15** edges
 
 ---
 
-## 4. Kết luận Đánh giá
+## 2. Phân tích Chi tiết Vai trò từng Loại Quan hệ (Relationship Evaluation)
 
-| Tiêu chí | Hiện trạng | Kết luận |
-| :--- | :--- | :---: |
-| **Quan hệ liên kết văn bản** | Không có quan hệ nối liên văn bản | **FAIL (Không đủ)** |
-| **Quan hệ cấu trúc** | Chỉ có `[:CONTAINS]` nội bộ văn bản | **Không hữu ích cho Gap** |
-| **Candidate Expansion qua KG** | Không thể thực hiện vì thiếu edge thực | **DISABLED** |
-| **Phương thức truy xuất Gap** | Giữ nguyên Hybrid Search + Reranking | **PASS** |
+| Loại Quan hệ (Relationship Type) | Số lượng Edge | Mục đích & Phạm vi Liên kết | Đánh giá Giá trị cho Compliance Gap Checker |
+| :--- | :---: | :--- | :--- |
+| `[:CONTAINS]` | 15 | Liệt kê Điều khoản thuộc Văn bản (`VanBan` -> `DieuKhoan`) | **Chỉ mang tính cấu trúc hình học (Structural Hierarchy)**. Hỗ trợ tra cứu parent-child trong 1 văn bản, KHÔNG giúp nối văn bản nhà nước với quy định nội bộ. |
+| `[:BAN_HANH_BOI]` | 30 | Liên kết Văn bản với Cơ quan ban hành (`Document` -> `CoQuan`) | **Siêu dữ liệu hành chính (Metadata Level)**. Không có giá trị trong việc so sánh nội dung hoặc gap tuân thủ. |
+| `[:KY_BOI]` | 29 | Liên kết Văn bản với Người ký (`Document` -> `NguoiKy`) | **Siêu dữ liệu người ký (Metadata Level)**. Không liên quan tới đối soát gap tuân thủ. |
+| `[:AP_DUNG_CHO]` | 30 | Liên kết Văn bản với Đối tượng áp dụng | **Siêu dữ liệu nhóm đối tượng (Broad Metadata)**. Quá tổng quát, không nối trực tiếp điều khoản cụ thể. |
+| `[:THUOC_LINH_VUC]` | 19 | Liên kết Văn bản với Lĩnh vực quản lý | **Siêu dữ liệu phân loại (Category Metadata)**. Không chứa liên kết ngữ nghĩa cụ thể. |
 
 ---
 
-```text
+## 3. Kết luận và Quyết định Tích hợp Đồ thị
+
+1. **Bản chất của các quan hệ hiện tại**: Toàn bộ các relationship thực sự tồn tại trong Neo4j (`CONTAINS`, `BAN_HANH_BOI`, `KY_BOI`, `AP_DUNG_CHO`, `THUOC_LINH_VUC`) chỉ đóng vai trò phân cấp cấu trúc tệp tin và thuộc tính hành chính.
+2. **Thiếu liên kết Ngữ nghĩa Liên miền (Missing Cross-Domain Semantic Edges)**: Đồ thị hiện chưa xây dựng các cạnh liên kết trực tiếp giữa Yêu cầu Tuân thủ Nhà nước (`EXTERNAL_REQUIREMENT`) và Điều khoản Quy định Nội bộ Ngân hàng (`INTERNAL_POLICY`).
+3. **Quyết định Kỹ thuật**: **KHÔNG SỬ DỤNG GRAPH CHO KHÂU GAP MATCHING (GRAPH NOT USED FOR GAP MATCHING)**. Hệ thống giữ nguyên phương pháp **Hybrid Search (BM25 + Dense) kết hợp Cross-Encoder Reranker** làm engine tìm kiếm bằng chứng chính thức.
+
+---
+
 GRAPH USED: NO
-REASON: GRAPH NOT USED FOR GAP MATCHING (Chỉ có quan hệ CONTAINS nội bộ tài liệu, không có quan hệ liên văn bản giữa External Requirement và Internal Policy)
-```
+REASON: Current Knowledge Graph relationships (CONTAINS, BAN_HANH_BOI, KY_BOI, AP_DUNG_CHO, THUOC_LINH_VUC) represent file hierarchy and administrative metadata only. Without explicit cross-domain compliance mapping edges between external regulations and internal policies, Hybrid Search + Cross-Encoder Reranker is the authoritative method for evidence retrieval.
