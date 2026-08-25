@@ -62,6 +62,7 @@ def concise_answer(question: str, results: list[dict[str, object]], limit: int =
 st.set_page_config(page_title="Secure RAG | Buoi 15", page_icon=":material/lock:", layout="wide")
 st.markdown(
     """
+    <meta name="google" content="notranslate">
     <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
     :root { --ink: #14213d; --muted: #667085; --line: #dce4ee; --teal: #0f766e; --teal-soft: #e7f5f2; --red: #b42318; }
@@ -178,7 +179,7 @@ if search_clicked:
         results = retriever.retrieve(question.strip(), selected_roles, method, top_k, candidate_k)
     stats = retriever.last_filter_stats
     if stats["filtered"]:
-        st.toast(f"Đã lọc bỏ {stats['filtered']} kết quả do không đủ quyền truy cập", icon=":material/lock:")
+        st.warning(f"🔒 Đã lọc bỏ {stats['filtered']} kết quả không thuộc thẩm quyền truy cập của vai trò hiện tại.", icon="🔒")
 
     st.markdown('<div class="section-label">Authorized evidence</div>', unsafe_allow_html=True)
     summary_cols = st.columns(4)

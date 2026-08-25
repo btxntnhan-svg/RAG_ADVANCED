@@ -44,7 +44,7 @@ QA_PATH = EVAL_DIR / "qa_dataset.csv"
 RESULTS_PATH = EVAL_DIR / "evaluation_results.csv"
 REPORT_PATH = PROJECT_ROOT / "outputs" / "ragas_evaluation_report.md"
 
-ROLES = ["Admin", "HR_Manager", "Risk_Officer", "Employee"]
+ROLES = ["Admin", "HR", "Staff", "Guest"]
 DEFAULT_GENERATOR_MODEL = "Qwen/Qwen3.5-9B:deepinfra"
 DEFAULT_JUDGE_MODEL = "openai/gpt-oss-20b:deepinfra"
 HF_BASE_URL = "https://router.huggingface.co/v1"

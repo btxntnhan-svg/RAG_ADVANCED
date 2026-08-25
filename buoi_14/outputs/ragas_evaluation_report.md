@@ -60,5 +60,5 @@ Dựa trên kết quả đo đạc từ Ragas, các giải pháp kỹ thuật đ
 
 ## 4. Tổng kết
 - Hệ thống đã hoàn thành đánh giá tự động trên toàn bộ 20 câu hỏi của Golden Dataset.
-- Báo cáo chi tiết đã được lưu trữ tại: `C:\Users\ngocngothi\Desktop\Rag_thuchanh\RAG\rag_advance\buoi_14\outputs\ragas_evaluation_report.md`
-- Bảng kết quả từng câu hỏi đã được lưu tại: `C:\Users\ngocngothi\Desktop\Rag_thuchanh\RAG\rag_advance\buoi_14\data\eval\evaluation_results.csv`
+- Báo cáo chi tiết đã được lưu trữ tại: `C:\Users\Win10-64\Desktop\RAG_ADVANCED\buoi_14\outputs\ragas_evaluation_report.md`
+- Bảng kết quả từng câu hỏi đã được lưu tại: `C:\Users\Win10-64\Desktop\RAG_ADVANCED\buoi_14\data\eval\evaluation_results.csv`

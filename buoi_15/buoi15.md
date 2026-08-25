@@ -118,8 +118,7 @@ Bạn là AI Coding Agent hỗ trợ tôi thực hiện bài thực hành Buổi
 Toàn bộ code và cấu hình của bài này phải được triển khai trực tiếp bên trong thư mục `buoi_14/`.
 Thông tin kết nối Neo4j sẽ được đọc từ file cấu hình của tôi tại `buoi_14/.env` (hoặc `.env` trong thư mục hiện hành).
 
-Tôi tự chọn các VAI TRÒ (Roles) cho hệ thống của mình bao gồm:
-[HỌC VIÊN ĐIỀN CÁC VAI TRÒ ĐÃ CHỌN VÀO ĐÂY, Ví dụ: "Admin", "HR", "Staff", "Guest"]
+Tôi tự chọn các VAI TRÒ (Roles) cho hệ thống của mình bao gồm: "Admin", "HR", "Staff", "Guest"
 
 Hãy giúp tôi:
 1. Xác nhận thư mục làm việc hiện tại là `buoi_14/`.
