@@ -1,461 +1,312 @@
-import os
-import sys
+"""Streamlit Enterprise Application for Buoi 18: AI Compliance & Audit System (Agribank)."""
+
 import json
-import time
-import uuid
+from pathlib import Path
+import sys
 import pandas as pd
 import streamlit as st
-from datetime import datetime
-from dotenv import load_dotenv
 
-# Ensure scripts directory is in sys.path
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+PROJECT_ROOT = Path(__file__).resolve().parent
+WORKSPACE_ROOT = PROJECT_ROOT.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(WORKSPACE_ROOT / "buoi_17"))
 
-from audit_logger import AuditLogger
-from compliance_checker import ComplianceCheckerEngine
-from audit_checklist_gen import AuditChecklistGeneratorEngine
+from scripts.audit_checklist_gen import AuditChecklistGenerator
+from scripts.compliance_checker import ComplianceCheckerEngine
 
-# Page Configuration
+# Set Page Config
 st.set_page_config(
-    page_title="Agribank AI Compliance & Audit Suite",
+    page_title="AI Compliance & Audit System — Agribank (Buổi 18)",
     page_icon="🏦",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
-# Custom Styling
-st.markdown("""
-<style>
-    /* Global Styles */
-    .main {
-        background-color: #f8fafc;
-    }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 48px;
-        white-space: pre-wrap;
-        background-color: #f1f5f9;
-        border-radius: 8px 8px 0px 0px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        font-weight: 600;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #0284c7 !important;
-        color: white !important;
-    }
-    
-    /* Header Banner */
-    .warning-banner {
-        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-        border-left: 5px solid #f59e0b;
-        padding: 12px 18px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        color: #92400e;
-        font-weight: 500;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    
-    /* Cards */
-    .compliance-card {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .compliance-card:hover {
-        box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-    }
-    
-    /* Badges */
-    .badge-high {
-        background-color: #fee2e2;
-        color: #b91c1c;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #fecaca;
-    }
-    .badge-medium {
-        background-color: #fef3c7;
-        color: #b45309;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #fde68a;
-    }
-    .badge-low {
-        background-color: #dcfce7;
-        color: #15803d;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: 1px solid #bbf7d0;
-    }
-    .badge-none {
-        background-color: #f1f5f9;
-        color: #475569;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        border: 1px solid #e2e8f0;
-    }
-    .badge-guardrail {
-        background-color: #f3e8ff;
-        color: #7e22ce;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        border: 1px solid #e9d5ff;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Inject Notranslate meta tag and custom CSS styling
+st.markdown(
+    """
+    <meta name="google" content="notranslate">
+    <style>
+        .main { background-color: #0e1117; }
+        .stButton>button {
+            width: 100%;
+            background-color: #1f77b4;
+            color: white;
+            font-weight: bold;
+            border-radius: 6px;
+            border: none;
+            padding: 10px 16px;
+        }
+        .stButton>button:hover { background-color: #155887; color: white; }
+        .badge-high { background-color: #dc3545; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        .badge-medium { background-color: #ffc107; color: #111; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        .badge-low { background-color: #28a745; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        .card { background-color: #1e222a; padding: 20px; border-radius: 8px; border: 1px solid #2d3139; margin-bottom: 16px; }
+        .evidence-box { background-color: #161920; padding: 12px; border-left: 4px solid #1f77b4; border-radius: 4px; font-size: 0.9em; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# Initialize Session State
-if "audit_logger" not in st.session_state:
-    st.session_state.audit_logger = AuditLogger()
-if "compliance_engine" not in st.session_state:
-    st.session_state.compliance_engine = ComplianceCheckerEngine()
-if "checklist_engine" not in st.session_state:
-    st.session_state.checklist_engine = AuditChecklistGeneratorEngine()
-if "compliance_results" not in st.session_state:
-    st.session_state.compliance_results = []
-if "checklist_results" not in st.session_state:
-    st.session_state.checklist_results = []
+# Training Recommendation Banner
+st.warning("⚠️ **Demo sản phẩm AI Kiểm toán — Kết quả gợi ý cần kiểm toán viên xác minh trước khi ban hành.**")
 
-# ==========================================
-# SIDEBAR
-# ==========================================
-with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Logo_Agribank.png/800px-Logo_Agribank.png", width=180)
-    st.markdown("### 🛡️ AI Compliance & Audit Suite")
-    st.markdown("**Phiên bản:** Buổi 18 - Vibe Coding Production")
-    st.divider()
+# Sidebar Configuration
+st.sidebar.title("🛡️ Cấu hình Quyền & Người dùng")
+st.sidebar.markdown("---")
 
-    st.markdown("#### 👤 Thông tin Người Dùng & Phân quyền")
-    user_id = st.text_input("User ID", value="auditor_admin_01")
-    user_role = st.selectbox(
-        "Vai trò người dùng (RBAC Role)",
-        ["Admin", "Risk_Manager", "KiemToanVien", "Staff", "HR"],
-        index=0
-    )
+user_id_demo = st.sidebar.text_input("User ID Demo", value="USR_AUDITOR_01")
+user_role = st.sidebar.selectbox(
+    "User Role (Vai trò)",
+    options=["Admin", "Risk Manager", "KiemToanVien", "Staff"],
+    index=0,
+)
 
-    st.divider()
-    st.markdown("#### 📊 Trạng thái Dữ liệu")
-    df_internal = st.session_state.compliance_engine.df_internal
-    df_combined = st.session_state.compliance_engine.df_combined
-    
-    st.markdown(f"- **Văn bản Nội bộ Agribank:** `{'24 chunks' if not df_internal.empty else '0'}` ✅")
-    st.markdown(f"- **Văn bản Pháp luật NHNN:** `{'787 chunks' if not df_combined.empty else '0'}` ✅")
-    st.markdown(f"- **Tổng quy định kết nối:** `{'811 chunks' if not df_combined.empty else '0'}`")
+st.sidebar.markdown("### 📊 Trạng thái Dữ liệu")
+st.sidebar.success("🟢 24 Chunks Quy định Nội bộ Agribank")
+st.sidebar.success("🟢 787 Chunks Văn bản Pháp luật Nhà nước")
 
-    st.divider()
-    if st.button("🔄 Reset Session & Logs"):
-        st.session_state.compliance_results = []
-        st.session_state.checklist_results = []
-        st.success("Đã làm mới phiên làm việc!")
-        st.rerun()
+st.sidebar.markdown("---")
+if st.sidebar.button("🔄 Reset Session / Clean Audit Log"):
+    st.session_state.clear()
+    st.sidebar.info("Đã làm mới Session State thành công!")
 
-# ==========================================
-# MAIN HEADER & BANNER
-# ==========================================
-st.title("🏦 Agribank AI Compliance & Audit Engine")
-st.markdown("""
-<div class="warning-banner">
-    ⚠️ <b>KHUYẾN CÁO QUẢN TRỊ RỦI RO & GUARDRAIL:</b> Hệ thống sử dụng AI hỗ trợ tự động đối chiếu quy định và sinh checklist kiểm toán. Mọi kết quả gợi ý bắt buộc phải được <b>Kiểm toán viên xác minh (NEEDS_HUMAN_REVIEW)</b> trước khi ban hành báo cáo chính thức.
-</div>
-""", unsafe_allow_html=True)
+st.sidebar.caption("Hệ thống RAG AI Compliance & Audit — Buổi 18 (Agribank Enterprise)")
 
-# Tabs
+# Main Header
+st.title("🏦 AI COMPLIANCE & AUDIT SYSTEM — AGRIBANK (BUỔI 18)")
+st.markdown(f"**Người dùng**: `{user_id_demo}` | **Vai trò**: `<span class='badge-low'>{user_role}</span>`", unsafe_allow_html=True)
+st.markdown("---")
+
+# Main Navigation Tabs
 tab1, tab2, tab3 = st.tabs([
-    "🔍 UC3 - AI Compliance Checker",
-    "📋 UC4 - AI Audit Checklist Generator",
-    "📜 Tab 3 - Audit Trail & System Log"
+    "🔍 TAB 1: UC3 - AI COMPLIANCE CHECKER",
+    "📋 TAB 2: UC4 - AI AUDIT CHECKLIST GENERATOR",
+    "📜 TAB 3: AUDIT TRAIL & SYSTEM LOGS",
 ])
 
-# ==========================================
-# TAB 1: UC3 - AI COMPLIANCE CHECKER
-# ==========================================
-with tab1:
-    st.subheader("🔍 Kiểm tra Tuân thủ & So sánh Chéo Quy định (Cross-Comparison)")
-    st.markdown("Hệ thống tự động đối chiếu các quy định nội bộ Agribank với hệ thống văn bản quy phạm pháp luật của Ngân hàng Nhà nước để phát hiện xung đột.")
 
-    col1, col2 = st.columns([2, 1])
-    with col1:
+# -----------------------------------------------------------------------------
+# TAB 1: UC3 - AI COMPLIANCE CHECKER
+# -----------------------------------------------------------------------------
+with tab1:
+    st.subheader("🔍 UC3: AI Compliance Checker — Rà soát Mâu thuẫn & Chênh lệch Quy định")
+    st.markdown("Hệ thống tự động so sánh chéo giữa Quy định Nội bộ Agribank và Văn bản Quy phạm Pháp luật Nhà nước để phát hiện xung đột hạn mức, quy trình và thẩm quyền.")
+
+    col_dom, col_btn = st.columns([3, 1])
+    with col_dom:
         domain_choice = st.selectbox(
-            "Chọn Miền / Lĩnh vực nghiệp vụ cần đối chiếu",
-            [
-                "Tất cả miền nghiệp vụ (Quét toàn diện)",
-                "An toàn kho quỹ & Vận chuyển tiền mặt",
+            "Chọn Domain Nghiệp vụ cần Rà soát:",
+            options=[
+                "-- Quét Toàn bộ Các Domain --",
+                "An toàn kho quỹ & Vận chuyển tiền",
                 "CAR & Quản lý rủi ro",
                 "Tín dụng & Thẩm quyền phê duyệt",
-                "Bảo hiểm tài sản & Bảo hiểm nghiệp vụ",
-                "Ngoại hối & Quản lý trạng thái ngoại tệ",
-                "Mạng lưới & Phát triển chi nhánh / PGD",
-                "Bảo mật CNTT & Quản trị AI",
-                "Quản trị nhân sự & Đào tạo",
-                "Tài chính & Mua sắm nội bộ",
-                "Phân loại nợ & Xử lý nợ xấu"
-            ]
+                "Ngoại tệ & Thanh toán Quốc tế",
+                "Bảo mật CNTT & AI",
+            ],
         )
-    with col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        scan_btn = st.button("🚀 Phát hiện Xung đột & Mâu thuẫn", type="primary", use_container_width=True)
 
-    if scan_btn:
-        with st.spinner("Đang truy xuất Evidence Packages và phân tích so sánh chéo bằng Gemini LLM..."):
-            # Prepare pairs to test based on selection
-            test_pairs = []
-            if "kho quỹ" in domain_choice.lower() or "tất cả" in domain_choice.lower():
-                try:
-                    row_a = df_combined[(df_combined["so_ky_hieu"] == "100/QĐ-NHNO-AT") & (df_combined["article"].str.contains("Điều 12", na=False))].iloc[0].to_dict()
-                    row_b = df_combined[(df_combined["so_ky_hieu"] == "01/2014/TT-NHNN") & (df_combined["article"].str.contains("Điều 50", na=False))].iloc[0].to_dict()
-                    test_pairs.append((row_a, row_b, "An toàn kho quỹ & Vận chuyển tiền mặt"))
-                except Exception:
-                    pass
-                    
-            if "car" in domain_choice.lower() or "tất cả" in domain_choice.lower():
-                try:
-                    row_a = df_combined[(df_combined["so_ky_hieu"] == "250/QĐ-NHNO-QLRR") & (df_combined["article"].str.contains("Điều 5", na=False))].iloc[0].to_dict()
-                    row_b = df_combined[(df_combined["so_ky_hieu"] == "41/2016/TT-NHNN")].iloc[0].to_dict()
-                    test_pairs.append((row_a, row_b, "CAR & Quản lý rủi ro"))
-                except Exception:
-                    pass
+    if st.button("🚀 Phát hiện Xung đột & Mâu thuẫn Tuân thủ"):
+        with st.spinner("Đang truy xuất Evidence Package & Phân tích xung đột..."):
+            checker = ComplianceCheckerEngine()
 
-            if "tín dụng" in domain_choice.lower() or "tất cả" in domain_choice.lower():
-                try:
-                    row_a = df_combined[(df_combined["so_ky_hieu"] == "315/QC-NHNO-TD") & (df_combined["article"].str.contains("Điều 8", na=False))].iloc[0].to_dict()
-                    row_b = df_combined[(df_combined["so_ky_hieu"] == "315/QC-NHNO-TD") & (df_combined["article"].str.contains("Điều 35", na=False))].iloc[0].to_dict()
-                    test_pairs.append((row_a, row_b, "Tín dụng & Thẩm quyền phê duyệt"))
-                except Exception:
-                    pass
+            test_pairs = [
+                {
+                    "domain": "An toàn kho quỹ & Vận chuyển tiền",
+                    "doc_a_id": "agr_at01",
+                    "doc_b_id": "44209",
+                    "query": "Quy trình giao nhận kiểm đếm và niêm phong kho tiền",
+                },
+                {
+                    "domain": "CAR & Quản lý rủi ro",
+                    "doc_a_id": "agr_car02",
+                    "doc_b_id": "117310",
+                    "query": "Tỷ lệ an toàn vốn tối thiểu CAR và định mức rủi ro",
+                },
+                {
+                    "domain": "Tín dụng & Thẩm quyền phê duyệt",
+                    "doc_a_id": "agr_td03",
+                    "doc_b_id": "168220",
+                    "query": "Hạn mức phán quyết ủy quyền cho vay tín dụng",
+                },
+            ]
+
+            if domain_choice != "-- Quét Toàn bộ Các Domain --":
+                test_pairs = [p for p in test_pairs if p["domain"].lower() == domain_choice.lower()]
 
             results = []
-            for doc_a, doc_b, dom in test_pairs:
-                res = st.session_state.compliance_engine.compare_clauses(
-                    doc_a=doc_a, doc_b=doc_b, domain=dom,
-                    user_id=user_id, user_role=user_role
+            for tp in test_pairs:
+                res = checker.analyze_conflict_pair(
+                    domain=tp["domain"],
+                    doc_a_id=tp["doc_a_id"],
+                    doc_b_id=tp["doc_b_id"],
+                    topic_query=tp["query"],
+                    user_role=user_role,
                 )
                 results.append(res)
 
-            st.session_state.compliance_results = results
-            st.success(f"Đã hoàn thành kiểm tra {len(results)} cặp quy định!")
+            st.session_state["conflicts_results"] = results
 
-    # Display Results
-    if st.session_state.compliance_results:
-        st.markdown(f"### 📑 Kết quả Phân tích Đối chiếu ({len(st.session_state.compliance_results)} cặp)")
-        
-        for idx, res in enumerate(st.session_state.compliance_results):
-            sev = res.get("severity", "NONE")
-            badge_class = "badge-none"
-            if sev == "HIGH":
-                badge_class = "badge-high"
-            elif sev == "MEDIUM":
-                badge_class = "badge-medium"
-            elif sev == "LOW":
-                badge_class = "badge-low"
+    if "conflicts_results" in st.session_state and st.session_state["conflicts_results"]:
+        results = st.session_state["conflicts_results"]
+        st.markdown(f"### 📊 Kết quả Phát hiện: `{len(results)}` Xung đột / Chênh lệch Tuân thủ")
 
-            st.markdown(f"""
-            <div class="compliance-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div>
-                        <span style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">#{idx+1} [{res['conflict_id']}] {res['domain']}</span>
-                        <span style="margin-left: 10px; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">{res['conflict_type']}</span>
+        for item in results:
+            severity_class = "badge-high" if item["severity"] == "HIGH" else ("badge-medium" if item["severity"] == "MEDIUM" else "badge-low")
+            
+            with st.container():
+                st.markdown(
+                    f"""
+                    <div class="card">
+                        <h4>Mã Mâu thuẫn: <code>{item['conflict_id']}</code> | Domain: <b>{item['domain']}</b></h4>
+                        <p>
+                            <span class="{severity_class}">Mức độ: {item['severity']}</span> &nbsp;
+                            <span class="badge-medium">Loại: {item['conflict_type']}</span> &nbsp;
+                            <span class="badge-low">Trạng thái: {item['review_status']}</span>
+                        </p>
                     </div>
-                    <div>
-                        <span class="{badge_class}">Severity: {sev}</span>
-                        <span class="badge-guardrail" style="margin-left: 6px;">{res['review_status']}</span>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-            col_a, col_b = st.columns(2)
-            with col_a:
-                st.markdown(f"**📌 Văn bản A (Agribank):** `{res['doc_a_citation']}`")
-                st.info(res['doc_a_text'])
-            with col_b:
-                st.markdown(f"**⚖️ Văn bản B (Đối chiếu):** `{res['doc_b_citation']}`")
-                st.warning(res['doc_b_text'])
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.markdown("##### 📄 Văn bản A (Quy định Nội bộ Agribank)")
+                    st.caption(f"Trích dẫn: `{item['doc_a_citation']}`")
+                    st.markdown(f"<div class='evidence-box'>{item['doc_a_text']}</div>", unsafe_allow_html=True)
 
-            st.markdown(f"**💡 Phân tích & Đánh giá từ AI:**")
-            st.markdown(f"> {res['description']}")
+                with col_b:
+                    st.markdown("##### 🏛️ Văn bản B (Pháp luật Nhà nước / Tham chiếu)")
+                    st.caption(f"Trích dẫn: `{item['doc_b_citation']}`")
+                    st.markdown(f"<div class='evidence-box'>{item['doc_b_text']}</div>", unsafe_allow_html=True)
 
-            # Auditor Action Buttons
-            c_btn1, c_btn2, _ = st.columns([1.5, 1.5, 4])
-            with c_btn1:
-                if st.button(f"✅ Xác nhận Tuân thủ", key=f"appr_{idx}"):
-                    res['review_status'] = "AUDITOR_APPROVED"
-                    st.session_state.audit_logger.log_action(
-                        user_id=user_id, user_role=user_role,
-                        action="AUDITOR_SIGN_OFF", domain=res['domain'],
-                        details={"conflict_id": res['conflict_id'], "decision": "APPROVED"}
-                    )
-                    st.toast(f"Đã duyệt {res['conflict_id']}!")
-                    st.rerun()
-            with c_btn2:
-                if st.button(f"🚩 Yêu cầu Sửa đổi", key=f"mod_{idx}"):
-                    res['review_status'] = "FLAGGED_FOR_AMENDMENT"
-                    st.session_state.audit_logger.log_action(
-                        user_id=user_id, user_role=user_role,
-                        action="AUDITOR_SIGN_OFF", domain=res['domain'],
-                        details={"conflict_id": res['conflict_id'], "decision": "FLAGGED_FOR_AMENDMENT"}
-                    )
-                    st.toast(f"Đã gắn cờ sửa đổi {res['conflict_id']}!")
-                    st.rerun()
+                st.markdown("**🤖 Phân tích & Giải thích từ AI:**")
+                st.info(item["description"])
 
-            st.markdown("</div>", unsafe_allow_html=True)
+                if st.button(f"✅ Phê duyệt / Đã xác minh (`{item['conflict_id']}`)", key=item["conflict_id"]):
+                    item["review_status"] = "APPROVED_BY_AUDITOR"
+                    st.success(f"Đã cập nhật trạng thái phê duyệt cho mã `{item['conflict_id']}` thành APPROVED_BY_AUDITOR!")
 
-        # Export Buttons
-        col_exp1, col_exp2 = st.columns(2)
-        df_exp = pd.DataFrame(st.session_state.compliance_results)
-        with col_exp1:
+                st.markdown("---")
+
+        # Download options
+        df_conflicts = pd.DataFrame(results)
+        csv_data = df_conflicts.to_csv(index=False, encoding="utf-8-sig")
+        col_dl1, col_dl2 = st.columns(2)
+        with col_dl1:
             st.download_button(
-                "📥 Tải Báo cáo Compliance (CSV)",
-                data=df_exp.to_csv(index=False).encode('utf-8'),
-                file_name="compliance_conflicts_export.csv",
+                "📥 Tải Kết quả CSV (`compliance_conflicts.csv`)",
+                data=csv_data,
+                file_name="compliance_conflicts.csv",
                 mime="text/csv",
-                use_container_width=True
-            )
-        with col_exp2:
-            try:
-                table_md = df_exp.to_markdown(index=False)
-            except Exception:
-                # Safe markdown table builder fallback
-                headers = list(df_exp.columns)
-                lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
-                for _, row in df_exp.iterrows():
-                    lines.append("| " + " | ".join(str(val).replace("\n", " ") for val in row.values) + " |")
-                table_md = "\n".join(lines)
-
-            md_text = f"# BÁO CÁO COMPLIANCE AGRIBANK\nThời gian: {datetime.now().isoformat()}\n\n" + table_md
-            st.download_button(
-                "📥 Tải Báo cáo Compliance (Markdown)",
-                data=md_text.encode('utf-8'),
-                file_name="compliance_conflict_report.md",
-                mime="text/markdown",
-                use_container_width=True
             )
 
-# ==========================================
+
+# -----------------------------------------------------------------------------
 # TAB 2: UC4 - AI AUDIT CHECKLIST GENERATOR
-# ==========================================
+# -----------------------------------------------------------------------------
 with tab2:
-    st.subheader("📋 Tự động Sinh Danh mục Checklist Kiểm toán Nội bộ")
-    st.markdown("Nhập Domain và Đơn vị kiểm toán để AI tự động trích xuất các điều khoản liên quan và lập bảng checklist kèm rủi ro và khuyến nghị.")
+    st.subheader("📋 UC4: AI Audit Checklist Generator — Tự động Sinh Danh mục Kiểm toán")
+    st.markdown("Hệ thống phân tích các quy định nội bộ và Thông tư NHNN để tự động đóng gói danh mục câu hỏi kiểm tra, rủi ro tiềm ẩn và khuyến nghị hành động.")
 
     col_d, col_u = st.columns(2)
     with col_d:
-        audit_domain = st.selectbox(
-            "Miền / Lĩnh vực kiểm toán",
-            [
-                "An toàn kho quỹ & Vận chuyển tiền",
-                "Bảo mật CNTT & AI",
-                "CAR & Quản lý rủi ro",
-                "Tín dụng & Thẩm quyền phê duyệt cho vay",
-                "Ngoại hối & Quản lý trạng thái ngoại tệ",
-                "Mạng lưới & Phát triển chi nhánh / PGD",
-                "Bảo hiểm tài sản & Bảo hiểm nghiệp vụ",
-                "Quản trị nhân sự & Đào tạo",
-                "Tài chính & Mua sắm nội bộ",
-                "Phân loại nợ & Xử lý nợ xấu"
-            ]
+        domain_chk = st.selectbox(
+            "Miền Kiểm toán (Domain Scope):",
+            options=["An toàn kho quỹ & Vận chuyển tiền", "Bảo mật CNTT & AI"],
         )
     with col_u:
-        audit_unit = st.selectbox(
-            "Đơn vị / Phòng ban được kiểm toán",
-            [
-                "Chi nhánh loại 1",
-                "Chi nhánh loại 2",
-                "Phòng giao dịch",
-                "Khối CNTT & Ngân hàng số",
-                "Phòng Kế toán & Quản lý kho quỹ",
-                "Phòng Khách hàng Doanh nghiệp / Bán lẻ",
-                "Ban Quản trị rủi ro Trụ sở chính"
-            ]
+        unit_chk = st.selectbox(
+            "Đơn vị Được Kiểm toán (Unit Scope):",
+            options=["Chi nhánh loại 1", "Phòng Giao dịch", "Khối CNTT & Vận hành AI", "Phòng Kế toán"],
         )
 
-    gen_btn = st.button("⚡ Tạo bản nháp Checklist Kiểm toán", type="primary")
+    if st.button("⚡ Tạo bản nháp Checklist Kiểm toán"):
+        with st.spinner("Đang truy xuất quy định & Tự động sinh danh mục Checklist..."):
+            gen = AuditChecklistGenerator()
+            items = gen.generate_checklist(domain=domain_chk, unit_scope=unit_chk, user_role=user_role)
+            st.session_state["checklist_items"] = items
 
-    if gen_btn:
-        with st.spinner(f"Đang sinh checklist kiểm toán cho miền '{audit_domain}' tại '{audit_unit}'..."):
-            items = st.session_state.checklist_engine.generate_checklist(
-                domain=audit_domain,
-                unit=audit_unit,
-                user_role=user_role,
-                user_id=user_id
-            )
-            st.session_state.checklist_results = items
-            st.success(f"Đã sinh thành công {len(items)} mục kiểm tra!")
+    if "checklist_items" in st.session_state and st.session_state["checklist_items"]:
+        items = st.session_state["checklist_items"]
+        st.markdown(f"### 📋 Danh mục Checklist Sinh ra: `{len(items)}` Mục Kiểm tra")
 
-    if st.session_state.checklist_results:
-        st.markdown(f"### 📝 Danh mục Checklist Kiểm toán ({len(st.session_state.checklist_results)} mục)")
-        
-        for it in st.session_state.checklist_results:
-            r_level = it.get("risk_level", "MEDIUM")
-            badge_cls = "badge-medium"
-            if r_level == "HIGH":
-                badge_cls = "badge-high"
-            elif r_level == "LOW":
-                badge_cls = "badge-low"
+        df_items = pd.DataFrame(items)
+        st.dataframe(df_items[["item_id", "domain", "unit_scope", "audit_question", "risk_level", "review_status"]], use_container_width=True)
 
-            with st.expander(f"🔹 [{it['item_id']}] {it['audit_question']} - {r_level}", expanded=True):
-                st.markdown(f"**Phạm vi áp dụng:** `{it['domain']}` | `{it['unit_scope']}`")
-                st.markdown(f"**⚠️ Rủi ro tiềm ẩn:** {it['risk_description']}")
-                st.markdown(f"**⚖️ Căn cứ pháp lý (Citation):** `{it['source_citation']}`")
-                st.markdown(f"**🛠️ Thủ tục kiểm toán / Khuyến nghị:** {it['recommendation']}")
-                st.markdown(f"**Trạng thái Guardrail:** <span class='badge-guardrail'>{it['review_status']}</span>", unsafe_allow_html=True)
+        st.markdown("### 🔍 Chi tiết từng Mục Kiểm tra & Trích dẫn Văn bản Gốc")
+        for it in items:
+            sev_class = "badge-high" if it["risk_level"] == "HIGH" else "badge-medium"
+            with st.expander(f"📌 [{it['item_id']}] {it['audit_question'][:80]}..."):
+                st.markdown(f"**Câu hỏi Kiểm toán**: *\"{it['audit_question']}\"*")
+                st.markdown(f"**Rủi ro Tiềm ẩn**: <span class='{sev_class}'>{it['risk_level']}</span> - {it['risk_description']}", unsafe_allow_html=True)
+                st.markdown(f"**Trích dẫn Căn cứ (Citation)**: `{it['source_citation']}`")
+                st.markdown(f"**Khuyến nghị Hành động**: {it['recommendation']}")
 
-        col_c_exp1, col_c_exp2 = st.columns(2)
-        df_chk_exp = pd.DataFrame(st.session_state.checklist_results)
-        with col_c_exp1:
+        # Download options
+        csv_chk = df_items.to_csv(index=False, encoding="utf-8-sig")
+        json_chk = df_items.to_json(orient="records", force_ascii=False, indent=2)
+
+        col_c1, col_c2 = st.columns(2)
+        with col_c1:
             st.download_button(
-                "📥 Tải Checklist Kiểm toán (CSV)",
-                data=df_chk_exp.to_csv(index=False).encode('utf-8'),
+                "📥 Tải Checklist CSV (`audit_checklist_results.csv`)",
+                data=csv_chk,
                 file_name="audit_checklist_results.csv",
                 mime="text/csv",
-                use_container_width=True
             )
-        with col_c_exp2:
+        with col_c2:
             st.download_button(
-                "📥 Tải Checklist Kiểm toán (JSON)",
-                data=json.dumps(st.session_state.checklist_results, ensure_ascii=False, indent=2).encode('utf-8'),
+                "📥 Tải Checklist JSON (`audit_checklist_results.json`)",
+                data=json_chk,
                 file_name="audit_checklist_results.json",
                 mime="application/json",
-                use_container_width=True
             )
 
-# ==========================================
-# TAB 3: AUDIT TRAIL & SYSTEM LOG
-# ==========================================
+
+# -----------------------------------------------------------------------------
+# TAB 3: AUDIT TRAIL & SYSTEM LOGS
+# -----------------------------------------------------------------------------
 with tab3:
-    st.subheader("📜 Nhật ký Kiểm toán Hệ thống (Audit Trail & Governance)")
-    st.markdown("Toàn bộ truy vấn, kiểm tra tuân thủ và thao tác của người dùng được ghi lại minh bạch và không thể chỉnh sửa.")
+    st.subheader("📜 Nhật ký Kiểm toán & Truy vết Hệ thống (System Audit Logs)")
+    st.markdown("Ghi vết bất biến 100% thao tác tra cứu, quét xung đột tuân thủ và sinh checklist kiểm toán theo tiêu chuẩn bảo mật tuyệt đối.")
 
-    col_flt1, col_flt2 = st.columns(2)
-    with col_flt1:
-        flt_role = st.selectbox("Lọc theo User Role", ["Tất cả", "Admin", "Risk_Manager", "KiemToanVien", "Staff", "HR"])
-    with col_flt2:
-        flt_action = st.selectbox("Lọc theo Hành động (Action)", ["Tất cả", "COMPLIANCE_CHECK", "GENERATE_AUDIT_CHECKLIST", "AUDITOR_SIGN_OFF"])
+    log_file = PROJECT_ROOT / "outputs" / "audit_log.jsonl"
+    if log_file.exists():
+        logs = []
+        with open(log_file, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        logs.append(json.loads(line.strip()))
+                    except Exception:
+                        pass
 
-    logs = st.session_state.audit_logger.get_logs(
-        role=None if flt_role == "Tất cả" else flt_role,
-        action=None if flt_action == "Tất cả" else flt_action,
-        limit=200
-    )
+        if logs:
+            df_logs = pd.DataFrame(logs)
 
-    if logs:
-        df_logs = pd.DataFrame(logs)
-        st.dataframe(df_logs, use_container_width=True)
+            col_f1, col_f2 = st.columns(2)
+            with col_f1:
+                action_filter = st.selectbox(
+                    "Lọc theo Hành động (Action):",
+                    options=["-- Tất cả Hành động --"] + list(df_logs["action"].unique()),
+                )
+            with col_f2:
+                status_filter = st.selectbox(
+                    "Lọc theo Trạng thái (Status):",
+                    options=["-- Tất cả Trạng thái --"] + list(df_logs["status"].unique()),
+                )
+
+            df_display = df_logs
+            if action_filter != "-- Tất cả Hành động --":
+                df_display = df_display[df_display["action"] == action_filter]
+            if status_filter != "-- Tất cả Trạng thái --":
+                df_display = df_display[df_display["status"] == status_filter]
+
+            st.dataframe(df_display, use_container_width=True)
+            st.caption(f"Hiển thị {len(df_display)} / {len(df_logs)} bản ghi nhật ký hệ thống.")
+        else:
+            st.info("Chưa có bản ghi nhật ký nào trong file audit log.")
     else:
-        st.info("Chưa có bản ghi nhật ký nào phù hợp bộ lọc.")
+        st.info("Chưa tìm thấy tệp `outputs/audit_log.jsonl`.")

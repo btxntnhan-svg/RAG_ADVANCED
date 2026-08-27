@@ -1,0 +1,15 @@
+.venv
+.git
+__pycache__
+*.pyc
+*.pyo
+.env
+buoi_10
+buoi_12
+buoi_14
+buoi_15
+buoi_16
+buoi_17
+buoi_18
+05_mẫu
+BaiTap

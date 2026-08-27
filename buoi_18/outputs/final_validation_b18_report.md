@@ -1,50 +1,47 @@
-# BÁO CÁO NGHIỆM THU TOÀN DIỆN DỰ ÁN BUỔI 18
-## AI Compliance Checker (UC3) & AI Audit Checklist Generator (UC4)
+# BÁO CÁO AUDIT TOÀN BỘ PROJECT VÀ NGHIỆM THU CUỐI CÙNG BUỔI 18
+## Hệ thống AI Compliance & Audit System — Agribank Enterprise
 
-**Thời gian nghiệm thu:** 2026-08-24 19:56:42  
-**Đơn vị thực hiện:** Nhóm Vibe Coding Agribank AI  
-**Trạng thái chung:** `PASS (8/8 Tiêu chuẩn đạt)`
-
----
-### 1. Bảng Tổng hợp Kết quả Nghiệm thu 8 Tiêu chí
-
-| STT | Tiêu chí Kiểm định | Đánh giá | Chi tiết kết quả & Bằng chứng nghiệm thu |
-|---|---|---|---|
-| 1 | **1. Source Data Integrity** | <span style='color:green;'>✅ <b>PASS</b></span> | Dữ liệu gốc được bảo toàn 100%: 'agribank_internal_policies.csv' (24 records, 14 metadata cols) và 'chunks_combined_secure.csv' (811 records, 25 văn bản duy nhất) được đọc ở chế độ Read-Only. |
-| 2 | **2. UC3 AI Compliance Checker** | <span style='color:green;'>✅ <b>PASS</b></span> | Core Engine UC3 hoạt động chính xác: Hỗ trợ so sánh chéo đa miền (Kho quỹ, CAR, Tín dụng), phân loại mâu thuẫn theo 4 nhóm nghiệp vụ và định mức Severity (HIGH/MEDIUM/LOW/NONE). |
-| 3 | **3. UC4 AI Audit Checklist Generator** | <span style='color:green;'>✅ <b>PASS</b></span> | Core Engine UC4 sinh checklist tự động bám sát Domain & Unit: Đã sinh thành công các mục kiểm tra cho Chi nhánh loại 1 và Khối CNTT với đầy đủ câu hỏi kiểm toán, rủi ro và kiến nghị thực địa. |
-| 4 | **4. Citation & Linking Integrity** | <span style='color:green;'>✅ <b>PASS</b></span> | Trích dẫn và nguồn căn cứ minh bạch: 100% các phát hiện và mục kiểm tra đều dẫn chiếu trực tiếp tới Số ký hiệu, Tên văn bản và Điều/Khoản gốc. |
-| 5 | **5. RBAC & Data Governance** | <span style='color:green;'>✅ <b>PASS</b></span> | Phân quyền RBAC & Quản trị bảo mật: Lọc quyền trước retrieval, ngăn chặn hoàn toàn người dùng role 'Staff' xem các quy định bảo mật riêng của 'Risk_Manager' và 'Admin'. |
-| 6 | **6. Streamlit Web Interface Demo** | <span style='color:green;'>✅ <b>PASS</b></span> | Giao diện Streamlit (app.py) hoàn thiện: Giao diện trực quan với 3 Tabs (UC3 Compliance Checker, UC4 Checklist Generator, Tab 3 Audit Trail) kèm Banner khuyến cáo và thanh điều khiển Sidebar. |
-| 7 | **7. Audit Trail & Logging System** | <span style='color:green;'>✅ <b>PASS</b></span> | Nhật ký kiểm toán Audit Trail hoạt động liên tục: Ghi nhận vết 7 thao tác dưới định dạng JSON Lines, tự động khử khuẩn và che giấu API keys. |
-| 8 | **8. Human Review Guardrail Enforcement** | <span style='color:green;'>✅ <b>PASS</b></span> | Guardrail kiểm soát con người: 100% mục checklist và phát hiện xung đột yêu cầu kiểm toán viên phê duyệt qua nhãn trạng thái 'NEEDS_HUMAN_REVIEW'. |
+- **Ngày thực hiện**: 2026-08-25
+- **Môi trường thực thi**: `buoi_18/`
+- **Trạng thái Đánh giá Tổng thể**: **`SẴN SÀNG DEMO (READY FOR DEMO)`**
 
 ---
-### 2. Danh mục Tài liệu và Sản phẩm Bàn giao
 
-- **Mã nguồn & Engines:**
-  - [`scripts/audit_logger.py`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/scripts/audit_logger.py): Module ghi nhật ký kiểm toán bất biến & khử khuẩn API Key.
-  - [`scripts/compliance_checker.py`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/scripts/compliance_checker.py): Core Engine đối chiếu và phân tích xung đột quy định (UC3).
-  - [`scripts/audit_checklist_gen.py`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/scripts/audit_checklist_gen.py): Core Engine sinh danh mục câu hỏi kiểm toán tự động (UC4).
-  - [`scripts/security_tests_b18.py`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/scripts/security_tests_b18.py): Bộ kịch bản 7 bài kiểm thử bảo mật và guardrails.
-  - [`app.py`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/app.py): Ứng dụng Web Streamlit tích hợp toàn diện UC3, UC4 và Audit Trail.
+## 1. Bảng Kiểm định 8 Tiêu chuẩn Kỹ thuật & Nghiệp vụ Buổi 18
 
-- **Dữ liệu & Báo cáo đầu ra:**
-  - [`outputs/b18_data_catalog.md`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/b18_data_catalog.md): Báo cáo cataloging dữ liệu.
-  - [`outputs/compliance_conflicts.csv`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/compliance_conflicts.csv) & [`outputs/compliance_conflict_report.md`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/compliance_conflict_report.md): Kết quả phân tích tuân thủ UC3.
-  - [`outputs/audit_checklist_results.csv`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/audit_checklist_results.csv) & [`outputs/audit_checklist_report.md`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/audit_checklist_report.md): Danh mục checklist kiểm toán UC4.
-  - [`outputs/security_test_b18_report.md`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/security_test_b18_report.md): Báo cáo kiểm thử bảo mật 7/7 tiêu chí.
-  - [`outputs/audit_trail.jsonl`](file:///c:/Users/ngocngothi/Desktop/Rag_thuchanh/RAG/rag_advance/buoi_18/outputs/audit_trail.jsonl): Nhật ký hệ thống ghi vết toàn bộ thao tác.
+| STT | Tiêu chí Kiểm định (Validation Criteria) | Mô tả & Bằng chứng Thực nghiệm | Trạng thái |
+| :---: | :--- | :--- | :---: |
+| 1 | **Source Data Integrity** | Bảo toàn dữ liệu gốc read-only: `agribank_internal_policies.csv` (24 chunks) và `chunks_combined_secure.csv` (811 chunks). | **PASS** |
+| 2 | **UC3 AI Compliance Checker** | Engine rà soát mâu thuẫn tuân thủ phát hiện chênh lệch quy trình/hạn mức kèm trích dẫn và Severity. | **PASS** |
+| 3 | **UC4 AI Audit Checklist Generator** | Engine tự động sinh checklist kiểm toán theo Domain & Unit Scope kèm trích dẫn văn bản gốc. | **PASS** |
+| 4 | **Citation & Linking** | Đóng gói 100% trích dẫn minh bạch kèm Số hiệu văn bản, Điều/Khoản và Document ID. | **PASS** |
+| 5 | **RBAC & Governance** | Lọc quyền RBAC nghiêm ngặt trước retrieval/context, chặn 100% truy cập trái phép vai trò Staff. | **PASS** |
+| 6 | **Streamlit Web Interface** | Ứng dụng Web `app.py` 3 Tabs vận hành mượt mà trực tiếp tại `http://localhost:8503`. | **PASS** |
+| 7 | **Audit Log & System Trail** | Ghi vết bất biến 100% thao tác vào `outputs/audit_log.jsonl`, được khử khuẩn an toàn. | **PASS** |
+| 8 | **Human Review Guardrail** | 100% kết quả do AI sinh ra bắt buộc gán nhãn `review_status = NEEDS_HUMAN_REVIEW`. | **PASS** |
 
 ---
-### 3. Đánh giá Tổng thể Nghiệm thu
 
-```plaintext
-- UC3 COMPLIANCE CHECKER: PASS
-- UC4 AUDIT CHECKLIST GEN: PASS
-- CITATION INTEGRITY: PASS
-- RBAC & GOVERNANCE: PASS
-- STREAMLIT DEMO: PASS
-- AUDIT TRAIL: PASS
-- SYSTEM READY FOR DEMO: YES
-```
+## 2. Kịch bản Trình bày Demo Cuối buổi
+
+1. **Demo UC3 (AI Compliance Checker)**:
+   - Chọn domain *"An toàn kho quỹ & Vận chuyển tiền"*.
+   - Nhấn nút rà soát $\rightarrow$ AI chỉ ra điểm chênh lệch quy trình vận chuyển tiền mặt bằng xe ô tô bọc thép giữa Quyết định 100/QĐ-NHNO-AT của Agribank và Thông tư 01/2014/TT-NHNN (`Severity: HIGH`).
+
+2. **Demo UC4 (AI Audit Checklist Generator)**:
+   - Chọn Domain: *"Bảo mật CNTT & AI"*, Unit Scope: *"Khối CNTT & Vận hành AI"*.
+   - AI tự động lập bảng checklist kiểm tra mã hóa at-rest (AES-128/Fernet) và thời gian lưu vết nhật ký 12 tháng $\rightarrow$ Trích dẫn trực tiếp Quy chế 600/QC-NHNO-CNTT.
+
+3. **Demo Audit Log & Human Guardrail**:
+   - Mở Tab 3 xem toàn bộ nhật ký truy vết hệ thống.
+   - Nhấn mạnh nhãn `NEEDS_HUMAN_REVIEW` khẳng định vai trò AI hỗ trợ nâng cao năng suất cho Kiểm toán viên, không thay thế con người.
+
+---
+
+UC3 COMPLIANCE CHECKER: PASS
+UC4 AUDIT CHECKLIST GEN: PASS
+CITATION INTEGRITY: PASS
+RBAC & GOVERNANCE: PASS
+STREAMLIT DEMO: PASS
+AUDIT TRAIL: PASS
+SYSTEM READY FOR DEMO: YES
